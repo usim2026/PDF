@@ -8,7 +8,7 @@
 
 面向已安装 Windows 10 或 Windows 11 的电脑，不需要再安装 Python。
 
-1. 打开 [Releases](https://github.com/usim2026/PDF/releases/tag/v1.0.0)，下载 `PDF工具-Windows.zip`。
+1. 打开 [Releases](https://github.com/usim2026/PDF/releases/tag/v1.0.0)，下载 `PDF-tool-windows.zip`。
 2. 把压缩包整个解压到一个文件夹。里面是目录 `PDF工具`，其中有 `PDF工具.exe`，以及同目录下的运行库。
 3. 双击 `PDF工具.exe`。
 
@@ -77,4 +77,4 @@
 pyinstaller --noconfirm --clean PDF工具.spec
 ```
 
-生成的程序在 `dist\PDF工具\PDF工具.exe`。推送到 `main` 且改动了程序、依赖或打包脚本时，GitHub Actions 会在 Windows 上重新打包，并更新 [v1.0.0](https://github.com/usim2026/PDF/releases/tag/v1.0.0) 附件里的 `PDF工具-Windows.zip`。
+生成的程序在 `dist\PDF工具\PDF工具.exe`。推送到 `main` 且改动了程序、依赖或打包脚本时，GitHub Actions 会在 Windows 上重新打包，并更新 [v1.0.0](https://github.com/usim2026/PDF/releases/tag/v1.0.0) 附件里的 `PDF-tool-windows.zip`。

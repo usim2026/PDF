@@ -38,7 +38,7 @@ jobs:
           if (-not (Test-Path "dist\PDF工具\PDF工具.exe")) {
             throw "没有生成 dist\PDF工具\PDF工具.exe"
           }
-          tar -a -c -f "PDF工具-Windows.zip" -C dist "PDF工具"
+          tar -a -c -f "PDF-tool-windows.zip" -C dist "PDF工具"
 
       - name: 发布到 Releases
         shell: pwsh
@@ -54,8 +54,8 @@ jobs:
           '@ | Set-Content -Encoding utf8 release-notes.md
           gh release view v1.0.0
           if ($LASTEXITCODE -ne 0) {
-            gh release create v1.0.0 "PDF工具-Windows.zip" --title "PDF 工具 Windows 可运行版" --notes-file release-notes.md
+            gh release create v1.0.0 "PDF-tool-windows.zip" --title "PDF 工具 Windows 可运行版" --notes-file release-notes.md
           } else {
-            gh release upload v1.0.0 "PDF工具-Windows.zip" --clobber
+            gh release upload v1.0.0 "PDF-tool-windows.zip" --clobber
             gh release edit v1.0.0 --title "PDF 工具 Windows 可运行版" --notes-file release-notes.md
           }
