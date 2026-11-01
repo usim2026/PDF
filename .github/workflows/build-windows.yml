@@ -1,0 +1,61 @@
+name: 打包 Windows 程序
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "launch.py"
+      - "requirements.txt"
+      - "PDF工具.spec"
+      - ".github/workflows/build-windows.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: 打包
+        run: pyinstaller --noconfirm --clean "PDF工具.spec"
+
+      - name: 压缩可运行目录
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "dist\PDF工具\PDF工具.exe")) {
+            throw "没有生成 dist\PDF工具\PDF工具.exe"
+          }
+          tar -a -c -f "PDF工具-Windows.zip" -C dist "PDF工具"
+
+      - name: 发布到 Releases
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          @'
+          解压整个压缩包，进入「PDF工具」文件夹，双击 PDF工具.exe。不需要安装 Python。请保留 exe 旁边的全部文件，只复制 exe 无法运行。
+
+          原文件只读。旋转、删除、裁切、改字、拼版和打印都写到新的 PDF，不能覆盖打开时的文件。默认输出在桌面的「PDF输出」。
+
+          「打开」用来查看和编辑；「发票打印」导入的发票才会按号码去重并进入发票汇总。扫描件没有文字层时不能改字，也汇总不出字段。
+          '@ | Set-Content -Encoding utf8 release-notes.md
+          gh release view v1.0.0
+          if ($LASTEXITCODE -ne 0) {
+            gh release create v1.0.0 "PDF工具-Windows.zip" --title "PDF 工具 Windows 可运行版" --notes-file release-notes.md
+          } else {
+            gh release upload v1.0.0 "PDF工具-Windows.zip" --clobber
+            gh release edit v1.0.0 --title "PDF 工具 Windows 可运行版" --notes-file release-notes.md
+          }

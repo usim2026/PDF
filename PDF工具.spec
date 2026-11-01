@@ -1,7 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+
 from PyInstaller.utils.hooks import collect_data_files
 from PyInstaller.utils.hooks import collect_dynamic_libs
 from PyInstaller.utils.hooks import collect_submodules
+
+root = os.path.abspath(SPECPATH)
 
 datas = []
 binaries = []
@@ -12,8 +16,8 @@ hiddenimports += collect_submodules('pymupdf')
 
 
 a = Analysis(
-    ['D:/pr/PDF/launch.py'],
-    pathex=['D:/pr/PDF'],
+    [os.path.join(root, 'launch.py')],
+    pathex=[root],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
