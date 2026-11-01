@@ -35,10 +35,17 @@ jobs:
       - name: 压缩可运行目录
         shell: pwsh
         run: |
-          if (-not (Test-Path "dist\PDF工具\PDF工具.exe")) {
-            throw "没有生成 dist\PDF工具\PDF工具.exe"
-          }
-          tar -a -c -f "PDF-tool-windows.zip" -C dist "PDF工具"
+          $ErrorActionPreference = "Stop"
+          $folders = @(Get-ChildItem -LiteralPath dist -Directory)
+          Write-Host ("dist folders: " + ($folders.Name -join ", "))
+          if ($folders.Count -lt 1) { throw "dist is empty" }
+          $exe = Get-ChildItem -LiteralPath $folders[0].FullName -Filter *.exe | Select-Object -First 1
+          if (-not $exe) { throw "no exe in dist" }
+          Write-Host ("exe: " + $exe.Name)
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $zip = Join-Path (Get-Location) "PDF-tool-windows.zip"
+          [System.IO.Compression.ZipFile]::CreateFromDirectory((Resolve-Path dist).Path, $zip)
+          Write-Host ("zip bytes: " + (Get-Item -LiteralPath $zip).Length)
 
       - name: 发布到 Releases
         shell: pwsh
